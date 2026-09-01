@@ -1,0 +1,71 @@
+:root {
+  color: #172033;
+  background: #f4f6fa;
+  font-family: Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+}
+
+.converter {
+  width: min(100%, 42rem);
+  margin: 0 auto;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+form {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #d9deea;
+  border-radius: 0.75rem;
+  background: white;
+}
+
+.field + .field {
+  margin-top: 1.25rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 0.75rem;
+  font: inherit;
+}
+
+input,
+select {
+  border: 1px solid #9aa4b8;
+  border-radius: 0.4rem;
+}
+
+button {
+  margin-top: 1.5rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: white;
+  background: #3159c9;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #2448ac;
+}

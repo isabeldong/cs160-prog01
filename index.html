@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walk, Roll, Glide, Convert</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="converter">
+      <header>
+        <h1>Walk, Roll, Glide, Convert</h1>
+        <p>Compare how long a trip takes with different ways to travel!</p>
+      </header>
+
+      <form id="trip-form">
+        <div class="field">
+          <label for="distance">Distance (Miles)</label>
+          <input
+            id="distance"
+            name="distance"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Ex: 8"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="transport">Transport Type</label>
+          <select id="transport" name="transport">
+            <option value="walking">Walking</option>
+            <option value="evolve-bamboo">Evolve Bamboo GTR 2-in-1</option>
+            <option value="onewheel-gt">Onewheel GT</option>
+            <option value="razor-e-prime">Razor E Prime III</option>
+          </select>
+        </div>
+
+        <button type="submit">Calculate travel time</button>
+      </form>
+
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
