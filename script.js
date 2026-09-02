@@ -4,41 +4,49 @@ const transports = {
     name: "Walking",
     speed: 3.1,
     range: 30,
+    image: "assets/images/walking.png",
   },
   "evolve-bamboo": {
     name: "Evolve Bamboo GTR 2-in-1",
     speed: 24,
     range: 31,
+    image: "assets/images/evolve-bamboo.webp",
   },
   "onewheel-gt": {
     name: "Onewheel GT",
     speed: 20,
     range: 32,
+    image: "assets/images/onewheel-gt.jpg",
   },
   "razor-e-prime": {
     name: "Razor E Prime III",
     speed: 18,
     range: 15,
+    image: "assets/images/razor-e-prime.jpg",
   },
   "mototec-skateboard": {
     name: "MotoTec Electric Skateboard",
     speed: 22,
     range: 10,
+    image: "assets/images/mototec-skateboard.jpeg",
   },
   "segway-ninebot": {
     name: "Segway Ninebot S2",
     speed: 11,
     range: 22,
+    image: "assets/images/segway-ninebot.avif",
   },
   "unagi-model-one": {
     name: "Unagi Model One E500",
     speed: 19,
     range: 15.5,
+    image: "assets/images/unagi-model-one.png",
   },
   "inmotion-v8s": {
-    name: "Inmotion V8S (electric unicycle)",
+    name: "Inmotion V8S",
     speed: 22,
     range: 47,
+    image: "assets/images/inmotion-v8s.png",
   },
 };
 
@@ -83,6 +91,58 @@ function addRangeWarning(resultLine, distance, transport) {
   }
 }
 
+// Create one card for a transport result
+function createTransportCard(transport, resultText, distance, isSelected) {
+  const transportCard = document.createElement("article");
+  transportCard.className = "transport-card";
+
+  // Mark the card when the user selected this transport
+  if (isSelected) {
+    transportCard.classList.add("selected-transport");
+
+    const selectedLabel = document.createElement("span");
+    selectedLabel.className = "selected-label";
+    selectedLabel.textContent = "Selected";
+    transportCard.appendChild(selectedLabel);
+  }
+
+  const transportName = document.createElement("h3");
+  transportName.textContent = transport.name;
+
+  // Show the matching image without repeating the name for screen readers
+  const transportImage = document.createElement("img");
+  transportImage.className = "transport-image";
+  transportImage.src = transport.image;
+  transportImage.alt = "";
+
+  const transportResult = document.createElement("p");
+  transportResult.textContent = resultText;
+
+  transportCard.appendChild(transportName);
+  transportCard.appendChild(transportImage);
+  transportCard.appendChild(transportResult);
+  addRangeWarning(transportCard, distance, transport);
+
+  return transportCard;
+}
+
+// Put the selected transport first, then add every other transport
+function getOrderedTransports(selectedKey) {
+  const orderedTransports = [];
+
+  if (selectedKey !== "all") {
+    orderedTransports.push(transports[selectedKey]);
+  }
+
+  for (const [key, transport] of Object.entries(transports)) {
+    if (key !== selectedKey) {
+      orderedTransports.push(transport);
+    }
+  }
+
+  return orderedTransports;
+}
+
 // Update form text when user changes calculation mode
 function updateMode() {
   const selectedMode = document.querySelector('input[name="mode"]:checked').value;
@@ -114,36 +174,25 @@ function showTravelTime(distance, selectedKey) {
   heading.textContent = `Travel Time for ${distance} Miles`;
   resultSection.appendChild(heading);
 
-  // Handle calculation for all transport types separately
-  if (selectedKey === "all") {
-    // Calculate and show time for each transport
-    for (const transport of Object.values(transports)) {
-      const travelTime = (distance / transport.speed) * 60;
-      const roundedTime = Math.round(travelTime * 10) / 10;
-      const transportResult = document.createElement("p");
+  const resultGrid = document.createElement("div");
+  resultGrid.className = "result-grid";
+  resultSection.appendChild(resultGrid);
 
-      transportResult.textContent = `${transport.name}: ${roundedTime} minutes`;
-      addRangeWarning(transportResult, distance, transport);
-      resultSection.appendChild(transportResult);
-    }
+  // Calculate and show time for all transports in display order
+  const orderedTransports = getOrderedTransports(selectedKey);
+  for (const transport of orderedTransports) {
+    const travelTime = (distance / transport.speed) * 60;
+    const roundedTime = Math.round(travelTime * 10) / 10;
+    const transportCard = createTransportCard(
+      transport,
+      `${roundedTime} minutes`,
+      distance,
+      transport === transports[selectedKey],
+    );
 
-    resultSection.hidden = false;
-    return;
+    resultGrid.appendChild(transportCard);
   }
 
-  const selectedTransport = transports[selectedKey];
-
-  // Calculate travel time in hours, then convert to minutes
-  const travelTime = (distance / selectedTransport.speed) * 60;
-
-  // Round result to one decimal place
-  const roundedTime = Math.round(travelTime * 10) / 10;
-
-  // Show calculated travel time below form
-  const transportResult = document.createElement("p");
-  transportResult.textContent = `${selectedTransport.name}: ${roundedTime} minutes`;
-  addRangeWarning(transportResult, distance, selectedTransport);
-  resultSection.appendChild(transportResult);
   resultSection.hidden = false;
 }
 
@@ -155,36 +204,25 @@ function showTravelDistance(time, selectedKey) {
   heading.textContent = `Travel Distance for ${time} Minutes`;
   resultSection.appendChild(heading);
 
-  // Handle calculation for all transport types separately
-  if (selectedKey === "all") {
-    // Calculate and show distance for each transport
-    for (const transport of Object.values(transports)) {
-      const travelDistance = transport.speed * (time / 60);
-      const roundedDistance = Math.round(travelDistance * 10) / 10;
-      const transportResult = document.createElement("p");
+  const resultGrid = document.createElement("div");
+  resultGrid.className = "result-grid";
+  resultSection.appendChild(resultGrid);
 
-      transportResult.textContent = `${transport.name}: ${roundedDistance} miles`;
-      addRangeWarning(transportResult, travelDistance, transport);
-      resultSection.appendChild(transportResult);
-    }
+  // Calculate and show distance for all transports in display order
+  const orderedTransports = getOrderedTransports(selectedKey);
+  for (const transport of orderedTransports) {
+    const travelDistance = transport.speed * (time / 60);
+    const roundedDistance = Math.round(travelDistance * 10) / 10;
+    const transportCard = createTransportCard(
+      transport,
+      `${roundedDistance} miles`,
+      travelDistance,
+      transport === transports[selectedKey],
+    );
 
-    resultSection.hidden = false;
-    return;
+    resultGrid.appendChild(transportCard);
   }
 
-  const selectedTransport = transports[selectedKey];
-
-  // Convert time to hours, then calculate travel distance
-  const travelDistance = selectedTransport.speed * (time / 60);
-
-  // Round result to one decimal place
-  const roundedDistance = Math.round(travelDistance * 10) / 10;
-
-  // Show calculated travel distance below form
-  const transportResult = document.createElement("p");
-  transportResult.textContent = `${selectedTransport.name}: ${roundedDistance} miles`;
-  addRangeWarning(transportResult, travelDistance, selectedTransport);
-  resultSection.appendChild(transportResult);
   resultSection.hidden = false;
 }
 

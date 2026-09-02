@@ -1,7 +1,7 @@
 :root {
   color: #172033;
   background: #f4f6fa;
-  font-family: Arial, sans-serif;
+  font-family: "DM Sans", system-ui, sans-serif;
 }
 
 * {
@@ -11,11 +11,11 @@
 body {
   margin: 0;
   min-height: 100vh;
-  padding: 3rem 1rem;
+  padding: 2rem 1rem;
 }
 
 .converter {
-  width: min(100%, 42rem);
+  width: 75%;
   margin: 0 auto;
 }
 
@@ -26,8 +26,11 @@ p {
 }
 
 form {
-  margin-top: 2rem;
-  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1.25rem;
   border: 1px solid #d9deea;
   border-radius: 0.75rem;
   background: white;
@@ -41,13 +44,71 @@ form {
   background: white;
 }
 
-.range-warning {
-  color: #c21e1e;
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.transport-card {
+  position: relative;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #d9deea;
+  border-radius: 0.5rem;
+  background: #f4f6fa;
+}
+
+.selected-transport {
+  border-color: #2e7d32;
+  background: #e8f5e9;
+}
+
+.selected-label {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: white;
+  background: #2e7d32;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
-.field + .field {
-  margin-top: 1.25rem;
+.selected-transport h3 {
+  padding-right: 4.75rem;
+}
+
+.transport-card h3 {
+  margin: 0 0 0.75rem;
+  min-height: 1.2em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.transport-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin-bottom: 0.75rem;
+  object-fit: contain;
+  background: white;
+}
+
+.transport-card p {
+  margin-bottom: 0;
+  font-weight: 700;
+}
+
+.transport-card .range-warning {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+.range-warning {
+  color: #c21e1e;
+  font-weight: 700;
 }
 
 label {
@@ -59,7 +120,8 @@ label {
 .mode-selector {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin: 0 0 1.25rem;
+  grid-column: 1 / -1;
+  margin: 0;
   padding: 0;
   border: 0;
 }
@@ -116,12 +178,14 @@ button {
 
 input,
 select {
+  height: 2.75rem;
   border: 1px solid #9aa4b8;
   border-radius: 0.4rem;
 }
 
 button {
-  margin-top: 1.5rem;
+  grid-column: 1 / -1;
+  margin-top: 0;
   border: 0;
   border-radius: 0.4rem;
   color: white;
@@ -131,4 +195,20 @@ button {
 
 button:hover {
   background: #2448ac;
+}
+
+@media (max-width: 42rem) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 28rem) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
 }
