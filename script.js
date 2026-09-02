@@ -1,36 +1,44 @@
-// Store name and speed for each transport option
+// Store name and speed and range for each transport option
 const transports = {
   walking: {
     name: "Walking",
     speed: 3.1,
+    range: 30,
   },
   "evolve-bamboo": {
     name: "Evolve Bamboo GTR 2-in-1",
     speed: 24,
+    range: 31,
   },
   "onewheel-gt": {
     name: "Onewheel GT",
     speed: 20,
+    range: 32,
   },
   "razor-e-prime": {
     name: "Razor E Prime III",
     speed: 18,
+    range: 15,
   },
   "mototec-skateboard": {
     name: "MotoTec Electric Skateboard",
     speed: 22,
+    range: 10,
   },
   "segway-ninebot": {
     name: "Segway Ninebot S2",
     speed: 11,
+    range: 22,
   },
   "unagi-model-one": {
     name: "Unagi Model One E500",
     speed: 19,
+    range: 15.5,
   },
   "inmotion-v8s": {
     name: "Inmotion V8S (electric unicycle)",
     speed: 22,
+    range: 47,
   },
 };
 
@@ -48,6 +56,16 @@ for (const [key, transport] of Object.entries(transports)) {
   transportInput.appendChild(option);
 }
 
+// Add warning text when distance is beyond transport range
+function addRangeWarning(resultLine, distance, transport) {
+  if (distance > transport.range) {
+    const warning = document.createElement("span");
+    warning.className = "range-warning";
+    warning.textContent = ` Exceeds the ${transport.range}-mile range.`;
+    resultLine.appendChild(warning);
+  }
+}
+
 // Function runs when user submits form
 tripForm.addEventListener("submit", function (event) {
   // Keep browser on page instead of refreshing it
@@ -57,16 +75,14 @@ tripForm.addEventListener("submit", function (event) {
   const distance = distanceInput.valueAsNumber;
   const selectedKey = transportInput.value;
 
+  // Replace previous results and add heading to result box
+  result.replaceChildren();
+  const heading = document.createElement("h2");
+  heading.textContent = `Travel Time for ${distance} Miles`;
+  result.appendChild(heading);
+
   // Handle calculation for all transport types separately
   if (selectedKey === "all") {
-    // Remove results from previous calculation
-    result.replaceChildren();
-
-    // Add heading to result box
-    const heading = document.createElement("h2");
-    heading.textContent = `Travel Times for ${distance} Miles`;
-    result.appendChild(heading);
-
     // Calculate and show time for each transport
     for (const transport of Object.values(transports)) {
       const travelTime = (distance / transport.speed) * 60;
@@ -74,6 +90,7 @@ tripForm.addEventListener("submit", function (event) {
       const transportResult = document.createElement("p");
 
       transportResult.textContent = `${transport.name}: ${roundedTime} minutes`;
+      addRangeWarning(transportResult, distance, transport);
       result.appendChild(transportResult);
     }
 
@@ -90,6 +107,9 @@ tripForm.addEventListener("submit", function (event) {
   const roundedTime = Math.round(travelTime * 10) / 10;
 
   // Show calculated travel time below form
-  result.textContent = `${distance} miles on ${selectedTransport.name} takes ${roundedTime} minutes.`;
+  const transportResult = document.createElement("p");
+  transportResult.textContent = `${selectedTransport.name}: ${roundedTime} minutes`;
+  addRangeWarning(transportResult, distance, selectedTransport);
+  result.appendChild(transportResult);
   result.hidden = false;
 });

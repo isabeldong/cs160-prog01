@@ -41,6 +41,11 @@ form {
   background: white;
 }
 
+.range-warning {
+  color: #c21e1e;
+  font-weight: 700;
+}
+
 .field + .field {
   margin-top: 1.25rem;
 }
