@@ -40,6 +40,31 @@ tripForm.addEventListener("submit", function (event) {
   // Read distance and selected transport from form
   const distance = distanceInput.valueAsNumber;
   const selectedKey = transportInput.value;
+
+  // Handle calculation for all transport types separately
+  if (selectedKey === "all") {
+    // Remove results from previous calculation
+    result.replaceChildren();
+
+    // Add heading to result box
+    const heading = document.createElement("h2");
+    heading.textContent = `Travel Times for ${distance} Miles`;
+    result.appendChild(heading);
+
+    // Calculate and show time for each transport
+    for (const transport of Object.values(transports)) {
+      const travelTime = (distance / transport.speed) * 60;
+      const roundedTime = Math.round(travelTime * 10) / 10;
+      const transportResult = document.createElement("p");
+
+      transportResult.textContent = `${transport.name}: ${roundedTime} minutes`;
+      result.appendChild(transportResult);
+    }
+
+    result.hidden = false;
+    return;
+  }
+
   const selectedTransport = transports[selectedKey];
 
   // Calculate travel time in hours, then convert to minutes
@@ -48,7 +73,7 @@ tripForm.addEventListener("submit", function (event) {
   // Round result to one decimal place
   const roundedTime = Math.round(travelTime * 10) / 10;
 
-  // Show  calculated travel time below form
+  // Show calculated travel time below form
   result.textContent = `${distance} miles on ${selectedTransport.name} takes ${roundedTime} minutes.`;
   result.hidden = false;
 });
