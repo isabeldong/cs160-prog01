@@ -42,11 +42,28 @@ const transports = {
   },
 };
 
-// Find form inputs in site
-const distanceInput = document.querySelector("#distance");
-const transportInput = document.querySelector("#transport");
+// Store text that changes between calculation modes
+const modes = {
+  distance: {
+    label: "Distance (Miles)",
+    placeholder: "Ex: 8",
+    button: "Calculate travel time",
+  },
+  time: {
+    label: "Time (Minutes)",
+    placeholder: "Ex: 30",
+    button: "Calculate travel distance",
+  },
+};
+
+// Find calculator elements in page
+const tripValueInput = document.querySelector("#trip-value-input");
+const transportInput = document.querySelector("#transport-input");
 const tripForm = document.querySelector("#trip-form");
-const result = document.querySelector("#result");
+const resultSection = document.querySelector("#result-section");
+const tripValueLabel = document.querySelector("#trip-value-label");
+const calculateButton = document.querySelector("#calculate-button");
+const modeInputs = document.querySelectorAll('input[name="mode"]');
 
 // Add dropdown option for each transport
 for (const [key, transport] of Object.entries(transports)) {
@@ -66,20 +83,36 @@ function addRangeWarning(resultLine, distance, transport) {
   }
 }
 
-// Function runs when user submits form
-tripForm.addEventListener("submit", function (event) {
-  // Keep browser on page instead of refreshing it
-  event.preventDefault();
+// Update form text when user changes calculation mode
+function updateMode() {
+  const selectedMode = document.querySelector('input[name="mode"]:checked').value;
+  const settings = modes[selectedMode];
 
-  // Read distance and selected transport from form
-  const distance = distanceInput.valueAsNumber;
-  const selectedKey = transportInput.value;
+  tripValueLabel.textContent = settings.label;
+  tripValueInput.placeholder = settings.placeholder;
+  calculateButton.textContent = settings.button;
 
+  // Clear values and results from previous mode
+  tripValueInput.value = "";
+  resultSection.replaceChildren();
+  resultSection.hidden = true;
+}
+
+// Listen for changes to either mode option
+for (const modeInput of modeInputs) {
+  modeInput.addEventListener("change", updateMode);
+}
+
+// Set form text for the mode selected when page loads
+updateMode();
+
+// Calculate and show results for Distance Mode
+function showTravelTime(distance, selectedKey) {
   // Replace previous results and add heading to result box
-  result.replaceChildren();
+  resultSection.replaceChildren();
   const heading = document.createElement("h2");
   heading.textContent = `Travel Time for ${distance} Miles`;
-  result.appendChild(heading);
+  resultSection.appendChild(heading);
 
   // Handle calculation for all transport types separately
   if (selectedKey === "all") {
@@ -91,10 +124,10 @@ tripForm.addEventListener("submit", function (event) {
 
       transportResult.textContent = `${transport.name}: ${roundedTime} minutes`;
       addRangeWarning(transportResult, distance, transport);
-      result.appendChild(transportResult);
+      resultSection.appendChild(transportResult);
     }
 
-    result.hidden = false;
+    resultSection.hidden = false;
     return;
   }
 
@@ -110,6 +143,64 @@ tripForm.addEventListener("submit", function (event) {
   const transportResult = document.createElement("p");
   transportResult.textContent = `${selectedTransport.name}: ${roundedTime} minutes`;
   addRangeWarning(transportResult, distance, selectedTransport);
-  result.appendChild(transportResult);
-  result.hidden = false;
+  resultSection.appendChild(transportResult);
+  resultSection.hidden = false;
+}
+
+// Calculate and show results for Time Mode
+function showTravelDistance(time, selectedKey) {
+  // Replace previous results and add heading to result box
+  resultSection.replaceChildren();
+  const heading = document.createElement("h2");
+  heading.textContent = `Travel Distance for ${time} Minutes`;
+  resultSection.appendChild(heading);
+
+  // Handle calculation for all transport types separately
+  if (selectedKey === "all") {
+    // Calculate and show distance for each transport
+    for (const transport of Object.values(transports)) {
+      const travelDistance = transport.speed * (time / 60);
+      const roundedDistance = Math.round(travelDistance * 10) / 10;
+      const transportResult = document.createElement("p");
+
+      transportResult.textContent = `${transport.name}: ${roundedDistance} miles`;
+      addRangeWarning(transportResult, travelDistance, transport);
+      resultSection.appendChild(transportResult);
+    }
+
+    resultSection.hidden = false;
+    return;
+  }
+
+  const selectedTransport = transports[selectedKey];
+
+  // Convert time to hours, then calculate travel distance
+  const travelDistance = selectedTransport.speed * (time / 60);
+
+  // Round result to one decimal place
+  const roundedDistance = Math.round(travelDistance * 10) / 10;
+
+  // Show calculated travel distance below form
+  const transportResult = document.createElement("p");
+  transportResult.textContent = `${selectedTransport.name}: ${roundedDistance} miles`;
+  addRangeWarning(transportResult, travelDistance, selectedTransport);
+  resultSection.appendChild(transportResult);
+  resultSection.hidden = false;
+}
+
+// Function runs when user submits form
+tripForm.addEventListener("submit", function (event) {
+  // Keep browser on page instead of refreshing it
+  event.preventDefault();
+
+  // Read value, transport, and calculation mode from form
+  const tripValue = tripValueInput.valueAsNumber;
+  const selectedKey = transportInput.value;
+  const selectedMode = document.querySelector('input[name="mode"]:checked').value;
+
+  if (selectedMode === "distance") {
+    showTravelTime(tripValue, selectedKey);
+  } else {
+    showTravelDistance(tripValue, selectedKey);
+  }
 });

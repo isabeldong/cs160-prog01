@@ -14,11 +14,32 @@
       </header>
 
       <form id="trip-form">
-        <div class="field">
-          <label for="distance">Distance (Miles)</label>
+        <fieldset class="mode-selector">
+          <legend>Calculation Mode</legend>
+
           <input
-            id="distance"
-            name="distance"
+            id="distance-mode-input"
+            name="mode"
+            type="radio"
+            value="distance"
+            checked
+          >
+          <label for="distance-mode-input">Distance Mode</label>
+
+          <input
+            id="time-mode-input"
+            name="mode"
+            type="radio"
+            value="time"
+          >
+          <label for="time-mode-input">Time Mode</label>
+        </fieldset>
+
+        <div class="field">
+          <label id="trip-value-label" for="trip-value-input">Distance (Miles)</label>
+          <input
+            id="trip-value-input"
+            name="trip-value-input"
             type="number"
             min="0"
             step="any"
@@ -28,16 +49,16 @@
         </div>
 
         <div class="field">
-          <label for="transport">Transport Type</label>
-          <select id="transport" name="transport">
+          <label for="transport-input">Transport Type</label>
+          <select id="transport-input" name="transport-input">
             <option value="all">All Transport Types</option>
           </select>
         </div>
 
-        <button type="submit">Calculate travel time</button>
+        <button id="calculate-button" type="submit">Calculate travel time</button>
       </form>
 
-      <section id="result" hidden></section>
+      <section id="result-section" hidden></section>
 
     </main>
 

@@ -33,7 +33,7 @@ form {
   background: white;
 }
 
-#result {
+#result-section {
   margin-top: 1.25rem;
   padding: 1.5rem;
   border: 1px solid #d9deea;
@@ -54,6 +54,56 @@ label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 700;
+}
+
+.mode-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  border: 0;
+}
+
+.mode-selector legend {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.mode-selector input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+}
+
+.mode-selector label {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid #9aa4b8;
+  text-align: center;
+  cursor: pointer;
+}
+
+.mode-selector label:first-of-type {
+  border-radius: 0.4rem 0 0 0.4rem;
+}
+
+.mode-selector label:last-of-type {
+  border-left: 0;
+  border-radius: 0 0.4rem 0.4rem 0;
+}
+
+.mode-selector input:checked + label {
+  color: white;
+  border-color: #3159c9;
+  background: #3159c9;
+}
+
+.mode-selector input:focus-visible + label {
+  outline: 2px solid #172033;
+  outline-offset: 2px;
 }
 
 input,
