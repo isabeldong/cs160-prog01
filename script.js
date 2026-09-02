@@ -16,6 +16,22 @@ const transports = {
     name: "Razor E Prime III",
     speed: 18,
   },
+  "mototec-skateboard": {
+    name: "MotoTec Electric Skateboard",
+    speed: 22,
+  },
+  "segway-ninebot": {
+    name: "Segway Ninebot S2",
+    speed: 11,
+  },
+  "unagi-model-one": {
+    name: "Unagi Model One E500",
+    speed: 19,
+  },
+  "inmotion-v8s": {
+    name: "Inmotion V8S (electric unicycle)",
+    speed: 22,
+  },
 };
 
 // Find form inputs in site
