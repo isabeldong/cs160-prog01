@@ -154,6 +154,7 @@ function updateMode() {
 
   // Clear values and results from previous mode
   tripValueInput.value = "";
+  transportInput.value = "all";
   resultSection.replaceChildren();
   resultSection.hidden = true;
 }
